@@ -1,0 +1,104 @@
+{
+  "works": [
+    {
+      "name": "JavBook Worker",
+      "max_request_per_second": 32,
+      "type": "common",
+      "seeds": [
+        "https://pics.dmm.co.jp/digital/video/ssni00568/ssni00568jp-1.jpg",
+        "https://ss9874.com/content_censored/212678.htm",
+        "https://ss9874.com"
+      ],
+      "rules": [
+        {
+          "type": "regexp",
+          "urn_pattern": [
+            "/digital/video/.*\\.jpg",
+            "/mono/actjpgs/.*\\.jpg"
+          ],
+          "pipelines": [
+            {
+              "name": "PersistLocalFilePipeline",
+              "properties": {
+                "BasePath": "d:/cache/x/"
+              }
+            }
+          ]
+        },
+        {
+          "type": "regexp",
+          "urn_pattern": [
+            "/\\w+/\\d+\\.htm"
+          ],
+          "pipelines": [
+            {
+              "name": "JavInfoPipeline"
+            },
+            {
+              "name": "DiscardPipeline"
+            }
+          ],
+          "follow": {
+            "allow_domains": [
+              "ss9874.com",
+              "pics.dmm.co.jp"
+            ],
+            "deny_domains": [],
+            "allow_rules": [
+              {
+                "type": "regexp",
+                "value": "/\\w+/\\d+\\.htm"
+              },
+              {
+                "type": "regexp",
+                "value": "/\\w+/\\w+/\\w+_\\d+\\.htm"
+              },
+              {
+                "type": "regexp",
+                "value": "/digital/video/.*\\.jpg"
+              },
+              {
+                "type": "regexp",
+                "value": "/mono/actjpgs/.*\\.jpg"
+              }
+            ],
+            "deny_rules": []
+          }
+        },
+        {
+          "type": "regexp",
+          "urn_pattern": [
+            "",
+            "/",
+            "/\\w+/\\w+/\\w+_\\d+\\.htm"
+          ],
+          "pipelines": [],
+          "follow": {
+            "allow_domain": [
+              "ss9874.com",
+              "pics.dmm.co.jp"
+            ],
+            "allow_rules": [
+              {
+                "type": "regexp",
+                "value": "/\\w+/\\d+\\.htm"
+              },
+              {
+                "type": "regexp",
+                "value": "/\\w+/\\w+/\\w+_\\d+\\.htm"
+              },
+              {
+                "type": "regexp",
+                "value": "/digital/video/.*\\.jpg"
+              },
+              {
+                "type": "regexp",
+                "value": "/mono/actjpgs/.*\\.jpg"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
