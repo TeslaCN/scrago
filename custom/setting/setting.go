@@ -1,8 +1,8 @@
 package setting
 
 import (
+	custom "github.com/TeslaCN/scrago/custom/pipeline"
 	"reflect"
-	custom "scrago/custom/pipeline"
 )
 
 var (

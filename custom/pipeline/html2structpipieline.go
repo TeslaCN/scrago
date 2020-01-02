@@ -2,7 +2,7 @@ package pipeline
 
 import (
 	"fmt"
-	"scrago/core/pipeline"
+	"github.com/TeslaCN/scrago/core/pipeline"
 )
 
 type Html2StructPipeline struct {

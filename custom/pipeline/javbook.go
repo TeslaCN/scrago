@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/PuerkitoBio/goquery"
-	"scrago/core/net"
-	"scrago/core/pipeline"
-	"scrago/core/reflection"
-	"scrago/custom/item"
-	"scrago/custom/pipeline/util"
+	"github.com/TeslaCN/scrago/core/net"
+	"github.com/TeslaCN/scrago/core/pipeline"
+	"github.com/TeslaCN/scrago/core/reflection"
+	"github.com/TeslaCN/scrago/custom/item"
+	"github.com/TeslaCN/scrago/custom/pipeline/util"
 )
 
 type JavInfoPipeline struct {

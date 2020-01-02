@@ -2,10 +2,10 @@ package pipeline
 
 import (
 	"bufio"
+	"github.com/TeslaCN/scrago/core/net"
+	"github.com/TeslaCN/scrago/core/pipeline"
 	"log"
 	"os"
-	"scrago/core/net"
-	"scrago/core/pipeline"
 	"strings"
 )
 

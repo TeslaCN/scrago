@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
+	"github.com/TeslaCN/scrago/cmd/scrago/config"
+	"github.com/TeslaCN/scrago/cmd/scrago/worker"
 	"log"
 	"os"
 	"os/signal"
-	"scrago/cmd/scrago/config"
-	"scrago/cmd/scrago/worker"
 	"sync"
 )
 

@@ -2,9 +2,9 @@ package repository
 
 import (
 	"encoding/json"
+	"github.com/TeslaCN/scrago/cmd/scrago/config"
 	"github.com/elastic/go-elasticsearch/v7"
 	"log"
-	"scrago/cmd/scrago/config"
 )
 
 var c *elasticsearch.Client

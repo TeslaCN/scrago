@@ -2,10 +2,10 @@ package ref
 
 import (
 	"fmt"
+	"github.com/TeslaCN/scrago/core/reflection"
+	"github.com/TeslaCN/scrago/custom/item"
 	"net/http"
 	"reflect"
-	"scrago/core/reflection"
-	"scrago/custom/item"
 	"testing"
 )
 

@@ -1,8 +1,8 @@
 package pipeline
 
 import (
+	"github.com/TeslaCN/scrago/core/pipeline"
 	"log"
-	"scrago/core/pipeline"
 )
 
 type DiscardPipeline struct {

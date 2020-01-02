@@ -1,8 +1,8 @@
 package pipeline
 
 import (
+	"github.com/TeslaCN/scrago/custom/pipeline/util"
 	"log"
-	"scrago/custom/pipeline/util"
 	"testing"
 )
 

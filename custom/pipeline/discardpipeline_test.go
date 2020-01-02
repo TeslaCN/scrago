@@ -2,8 +2,8 @@ package pipeline
 
 import (
 	"fmt"
+	"github.com/TeslaCN/scrago/core/pipeline"
 	"reflect"
-	"scrago/core/pipeline"
 	"testing"
 )
 

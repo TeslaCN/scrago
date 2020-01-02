@@ -2,9 +2,9 @@ package task
 
 import (
 	"fmt"
+	"github.com/TeslaCN/scrago/core/util"
+	"github.com/TeslaCN/scrago/custom/setting"
 	"net/url"
-	"scrago/core/util"
-	"scrago/custom/setting"
 	"sync"
 )
 

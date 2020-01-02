@@ -1,11 +1,11 @@
 package util
 
 import (
+	"github.com/TeslaCN/scrago/cmd/scrago/config"
+	"github.com/TeslaCN/scrago/core/pipeline"
+	"github.com/TeslaCN/scrago/custom/setting"
 	"log"
 	"reflect"
-	"scrago/cmd/scrago/config"
-	"scrago/core/pipeline"
-	"scrago/custom/setting"
 )
 
 func GetPipelineByName(name string) (pipeline.Pipeline, bool) {
