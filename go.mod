@@ -1,6 +1,6 @@
-module scrago
+module github.com/TeslaCN/scrago
 
-go 1.13
+go 1.13.5
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
