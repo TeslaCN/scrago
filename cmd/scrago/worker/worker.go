@@ -94,9 +94,9 @@ WORKING:
 				httpResponse, e = w.requester.Get(fetchedTask.Url.String(), nil)
 			}
 			if e != nil {
+				log.Printf("Request [%s] failed", e.Error())
 				w.deduplicate.Remove(fetchedTask.Url)
 				go w.pool.Offer(*fetchedTask)
-				log.Printf("Request [%s] failed", e.Error())
 				continue
 			}
 

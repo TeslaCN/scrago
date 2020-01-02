@@ -5,11 +5,14 @@ type WorkConfig struct {
 }
 
 type Work struct {
-	Name                string   `json:"name"`
-	MaxRequestPerSecond int      `json:"max_request_per_second"`
-	Type                string   `json:"type"`
-	Seeds               []string `json:"seeds"`
-	Rules               []Rule   `json:"rules"`
+	Name                        string   `json:"name"`
+	MaxRequestPerSecond         int      `json:"max_request_per_second"`
+	ConcurrentRequests          int      `json:"concurrent_requests"`
+	ConcurrentRequestsPerDomain int      `json:"concurrent_requests_per_domain"`
+	ConcurrentRequestsPerIp     int      `json:"concurrent_requests_per_ip"`
+	Type                        string   `json:"type"`
+	Seeds                       []string `json:"seeds"`
+	Rules                       []Rule   `json:"rules"`
 }
 
 type Rule struct {

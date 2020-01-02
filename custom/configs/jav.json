@@ -3,6 +3,9 @@
     {
       "name": "JavBook Worker",
       "max_request_per_second": 32,
+      "concurrent_requests": 32,
+      "concurrent_requests_per_domain": 32,
+      "concurrent_requests_per_ip": 32,
       "type": "common",
       "seeds": [
         "https://pics.dmm.co.jp/digital/video/ssni00568/ssni00568jp-1.jpg",

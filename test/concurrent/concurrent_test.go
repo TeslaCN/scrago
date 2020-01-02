@@ -3,6 +3,7 @@ package concurrent
 import (
 	"context"
 	"fmt"
+	"log"
 	"testing"
 	"time"
 )
@@ -31,12 +32,12 @@ func TestContext(t *testing.T) {
 
 func TestSpeedLimit(t *testing.T) {
 
-	capacity := 32
+	capacity := 5
 	c := make(chan int, capacity)
 
-	fmt.Println("Before => ", cap(c), len(c))
+	log.Println("Before => ", cap(c), len(c))
 	c <- 1
-	fmt.Println("After => ", cap(c), len(c))
+	log.Println("After => ", cap(c), len(c))
 
 	for i := 0; i < 100; i++ {
 		var f func(int)
@@ -46,7 +47,7 @@ func TestSpeedLimit(t *testing.T) {
 			//	c <- s
 			//	f(i)
 			//}
-			fmt.Printf("%d => %d\n", s, n)
+			log.Printf("%d => %d", s, n)
 		}
 		go f(i)
 	}
