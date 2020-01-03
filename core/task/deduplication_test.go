@@ -2,6 +2,7 @@ package task
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"testing"
 )
@@ -21,10 +22,21 @@ func TestUrlParse(t *testing.T) {
 }
 
 func TestDedup(t *testing.T) {
-	deduplicate := &DefaultDeduplicate{}
+	deduplicate := NewDeduplicate()
 	u0, _ := url.Parse("https://ss9874.com/un/001.htm")
 	u1, _ := url.Parse("https://ss9874.com/un/002.htm")
 	t.Log(deduplicate.De(*u0))
 	t.Log(deduplicate.De(*u1))
 	t.Log(deduplicate.De(*u1))
+}
+
+var m = make(map[string]string)
+
+func TestMap(t *testing.T) {
+	getMap()["hello"] = "world"
+	log.Println(m)
+}
+
+func getMap() map[string]string {
+	return m
 }

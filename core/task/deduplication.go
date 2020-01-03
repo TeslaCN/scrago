@@ -2,8 +2,8 @@ package task
 
 import (
 	"fmt"
+	"github.com/TeslaCN/scrago/core/setting"
 	"github.com/TeslaCN/scrago/core/util"
-	"github.com/TeslaCN/scrago/custom/setting"
 	"net/url"
 	"sync"
 )
@@ -15,14 +15,14 @@ type Deduplicate interface {
 }
 
 type DefaultDeduplicate struct {
-	b    [setting.BloomFilterSize]bool
+	b    []bool
 	lock sync.Mutex
 }
 
 func (d *DefaultDeduplicate) Exist(u url.URL) int {
 	s := fmt.Sprintf("%s%s", u.Host, u.RequestURI())
 	hashCode := util.HashCode(s)
-	position := util.Reserve(hashCode, setting.DeduplicationOffset)
+	position := util.Reserve(hashCode, setting.GetDeduplicationOffset())
 
 	exists := d.b[position]
 	if exists {
@@ -33,13 +33,15 @@ func (d *DefaultDeduplicate) Exist(u url.URL) int {
 }
 
 func NewDeduplicate() Deduplicate {
-	return &DefaultDeduplicate{}
+	d := &DefaultDeduplicate{}
+	d.b = make([]bool, setting.GetBloomFilterSize())
+	return d
 }
 
 func (d *DefaultDeduplicate) De(u url.URL) int {
 	s := fmt.Sprintf("%s%s", u.Host, u.RequestURI())
 	hashCode := util.HashCode(s)
-	position := util.Reserve(hashCode, setting.DeduplicationOffset)
+	position := util.Reserve(hashCode, setting.GetDeduplicationOffset())
 
 	exists := d.b[position]
 	if exists {
@@ -59,7 +61,7 @@ func (d *DefaultDeduplicate) De(u url.URL) int {
 func (d *DefaultDeduplicate) Remove(u url.URL) int {
 	s := fmt.Sprintf("%s%s", u.Host, u.RequestURI())
 	hashCode := util.HashCode(s)
-	position := util.Reserve(hashCode, setting.DeduplicationOffset)
+	position := util.Reserve(hashCode, setting.GetDeduplicationOffset())
 
 	exists := d.b[position]
 	if exists {

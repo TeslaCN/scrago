@@ -1,9 +1,6 @@
 package ref
 
 import (
-	"fmt"
-	"github.com/TeslaCN/scrago/core/reflection"
-	"github.com/TeslaCN/scrago/custom/item"
 	"net/http"
 	"reflect"
 	"testing"
@@ -32,8 +29,8 @@ func TestReflect(t *testing.T) {
 }
 
 func TestParseStruct(t *testing.T) {
-	parseStruct := reflection.ParseStruct(item.VideoInformationTemp{})
-	fmt.Println(parseStruct)
+	//parseStruct := reflection.ParseStruct(item.VideoInformationTemp{})
+	//fmt.Println(parseStruct)
 }
 
 type TestStruct struct {

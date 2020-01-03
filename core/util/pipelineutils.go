@@ -3,13 +3,13 @@ package util
 import (
 	"github.com/TeslaCN/scrago/cmd/scrago/config"
 	"github.com/TeslaCN/scrago/core/pipeline"
-	"github.com/TeslaCN/scrago/custom/setting"
+	"github.com/TeslaCN/scrago/core/setting"
 	"log"
 	"reflect"
 )
 
 func GetPipelineByName(name string) (pipeline.Pipeline, bool) {
-	i, ok := setting.PipelineMapping[name]
+	i, ok := setting.GetPipelineMapping()[name]
 	if !ok {
 		log.Fatalf("Pipeline [%s] not found\n", name)
 	}

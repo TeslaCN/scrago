@@ -1,5 +1,16 @@
 # Scrago
 
+### 使用
+
+go get
+```
+go get github.com/TeslaCN/scrago
+```
+
+go.mod
+```
+require github.com/TeslaCN/scrago v0.0.4
+```
 
 ### 附录  
 #### 系统命名规则

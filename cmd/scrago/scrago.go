@@ -1,4 +1,4 @@
-package main
+package scrago
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func init() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 }
 
-func main() {
+func Start() {
 	c := make(chan os.Signal, 1)
 	ctx, cancel := context.WithCancel(context.WithValue(context.Background(), "wg", wg))
 	signal.Notify(c, os.Interrupt, os.Kill)

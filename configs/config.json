@@ -1,8 +1,0 @@
-{
-  "work_config": [
-    "custom/configs/jav.json"
-  ],
-  "custom": {
-    "elasticsearch.hosts": "http://127.0.0.1:49204"
-  }
-}
