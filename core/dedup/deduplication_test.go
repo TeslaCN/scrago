@@ -1,9 +1,10 @@
-package task
+package dedup
 
 import (
 	"fmt"
 	"log"
 	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -39,4 +40,8 @@ func TestMap(t *testing.T) {
 
 func getMap() map[string]string {
 	return m
+}
+
+func TestTypeOf(t *testing.T) {
+	log.Println(reflect.TypeOf(DefaultDeduplicate{}).Name())
 }

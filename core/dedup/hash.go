@@ -1,4 +1,4 @@
-package util
+package dedup
 
 /*
 Java 8 String.hashCode()

@@ -1,19 +1,40 @@
-package task
+package dedup
 
 import (
 	"fmt"
 	"github.com/TeslaCN/scrago/core/setting"
-	"github.com/TeslaCN/scrago/core/util"
 	"net/url"
+	"reflect"
 	"sync"
 )
 
+func init() {
+	setting.AddDeduplicationType("DefaultDeduplicate", reflect.TypeOf(&DefaultDeduplicate{}))
+}
+
+// URL去重声明
 type Deduplicate interface {
+
+	// De 去重
+	// 返回结果：
+	// 目标已存在 大于0
+	// 否则返回 0
 	De(u url.URL) int
+
+	// Exist 是否重复
+	// 返回结果：
+	// 目标存在 大于0
+	// 不存在 0
 	Exist(u url.URL) int
+
+	// Remove 撤销去重
+	// 返回结果：
+	// 目标存在 大于0
+	// 原本就不存在 返回0
 	Remove(u url.URL) int
 }
 
+// 默认去重实现，基于进程内存实现
 type DefaultDeduplicate struct {
 	b    []bool
 	lock sync.Mutex
@@ -21,8 +42,8 @@ type DefaultDeduplicate struct {
 
 func (d *DefaultDeduplicate) Exist(u url.URL) int {
 	s := fmt.Sprintf("%s%s", u.Host, u.RequestURI())
-	hashCode := util.HashCode(s)
-	position := util.Reserve(hashCode, setting.GetDeduplicationOffset())
+	hashCode := HashCode(s)
+	position := Reserve(hashCode, setting.GetDeduplicationOffset())
 
 	exists := d.b[position]
 	if exists {
@@ -40,15 +61,15 @@ func NewDeduplicate() Deduplicate {
 
 func (d *DefaultDeduplicate) De(u url.URL) int {
 	s := fmt.Sprintf("%s%s", u.Host, u.RequestURI())
-	hashCode := util.HashCode(s)
-	position := util.Reserve(hashCode, setting.GetDeduplicationOffset())
+	hashCode := HashCode(s)
+	position := Reserve(hashCode, setting.GetDeduplicationOffset())
 
+	d.lock.Lock()
+	defer d.lock.Unlock()
 	exists := d.b[position]
 	if exists {
 		return 1
 	} else {
-		d.lock.Lock()
-		defer d.lock.Unlock()
 		if d.b[position] == false {
 			d.b[position] = true
 			return 0
@@ -60,9 +81,11 @@ func (d *DefaultDeduplicate) De(u url.URL) int {
 
 func (d *DefaultDeduplicate) Remove(u url.URL) int {
 	s := fmt.Sprintf("%s%s", u.Host, u.RequestURI())
-	hashCode := util.HashCode(s)
-	position := util.Reserve(hashCode, setting.GetDeduplicationOffset())
+	hashCode := HashCode(s)
+	position := Reserve(hashCode, setting.GetDeduplicationOffset())
 
+	d.lock.Lock()
+	defer d.lock.Unlock()
 	exists := d.b[position]
 	if exists {
 		d.b[position] = false

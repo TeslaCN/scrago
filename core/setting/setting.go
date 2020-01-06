@@ -3,8 +3,10 @@ package setting
 import "reflect"
 
 var (
-	pipelineMapping     = make(map[string]reflect.Type)
-	deduplicationOffset = 25
+	pipelineMapping      = make(map[string]reflect.Type)
+	deduplicationMapping = make(map[string]reflect.Type)
+	poolMapping          = make(map[string]reflect.Type)
+	deduplicationOffset  = 25
 )
 
 func GetBloomFilterSize() uint64 {
@@ -19,10 +21,28 @@ func GetDeduplicationOffset() int32 {
 	return int32(deduplicationOffset)
 }
 
-func AddPipelineMapping(name string, p reflect.Type) {
+func AddPipelineType(name string, p reflect.Type) {
 	pipelineMapping[name] = p
 }
 
-func GetPipelineMapping() map[string]reflect.Type {
-	return pipelineMapping
+func GetPipelineType(name string) (reflect.Type, bool) {
+	t, ok := pipelineMapping[name]
+	return t, ok
+}
+
+func AddDeduplicationType(name string, d reflect.Type) {
+	deduplicationMapping[name] = d
+}
+func GetDeduplicateType(name string) (reflect.Type, bool) {
+	t, ok := deduplicationMapping[name]
+	return t, ok
+}
+
+func AddPoolType(name string, p reflect.Type) {
+	poolMapping[name] = p
+}
+
+func GetPoolType(name string) (reflect.Type, bool) {
+	t, ok := poolMapping[name]
+	return t, ok
 }

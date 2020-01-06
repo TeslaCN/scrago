@@ -8,15 +8,23 @@ import (
 )
 
 type WorkerConfig struct {
-	WorkConfig []string          `json:"work_config"`
-	Custom     map[string]string `json:"custom"`
+	WorkConfigPath string `json:"work_config_path"`
+	Deduplication  struct {
+		Name       string
+		Parameters map[string]string
+	} `json:"deduplication"`
+	Pool struct {
+		Name       string
+		Parameters map[string]string
+	} `json:"pool"`
+	Custom map[string]string `json:"custom"`
 }
 
 var (
 	configPath = flag.String("c", "", "-c /path/to/config.json")
 
 	workerConfig = &WorkerConfig{}
-	workConfigs  []*WorkConfig
+	workConfig   *WorkConfig
 )
 
 func init() {
@@ -51,28 +59,21 @@ func GetWorkerConfig() WorkerConfig {
 	return *workerConfig
 }
 
-func GetWorkConfigs() []WorkConfig {
-	var works []WorkConfig
-	for _, e := range workConfigs {
-		works = append(works, *e)
-	}
-	return works
+func GetWorkConfig() WorkConfig {
+	return *workConfig
 }
 
 func loadWorkConfig() {
-	for _, path := range workerConfig.WorkConfig {
-		file, e := os.Open(path)
-		if e != nil {
-			log.Println("Work Config file not found: " + path)
-			continue
-		}
-		workConfig := &WorkConfig{}
-		decoder := json.NewDecoder(file)
-		if e := decoder.Decode(workConfig); e != nil {
-			log.Println(e)
-		}
-		log.Println(workConfig)
-		workConfigs = append(workConfigs, workConfig)
-		_ = file.Close()
+	file, e := os.Open(workerConfig.WorkConfigPath)
+	if e != nil {
+		log.Fatalln("Work Config file not found: " + workerConfig.WorkConfigPath)
 	}
+	wc := &WorkConfig{}
+	decoder := json.NewDecoder(file)
+	if e := decoder.Decode(wc); e != nil {
+		log.Println(e)
+	}
+	log.Println(wc)
+	workConfig = wc
+	_ = file.Close()
 }

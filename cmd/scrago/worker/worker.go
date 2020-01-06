@@ -6,14 +6,17 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/TeslaCN/scrago/cmd/scrago/config"
+	"github.com/TeslaCN/scrago/core/dedup"
 	"github.com/TeslaCN/scrago/core/net"
 	"github.com/TeslaCN/scrago/core/task"
 	"github.com/TeslaCN/scrago/core/util"
 	"log"
 	"net/http"
 	"net/url"
+	"reflect"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -27,7 +30,7 @@ type DefaultWorker struct {
 	Work        config.Work
 	ctx         context.Context
 	pool        task.Pool
-	deduplicate task.Deduplicate
+	deduplicate dedup.Deduplicate
 	requester   net.HttpRequester
 }
 
@@ -112,24 +115,21 @@ WORKING:
 
 			// put raw into pipeline & create new tasks
 			anyMatched := false
+			var matchedRules = make([]config.Rule, 0, len(w.Work.Rules))
+
 			for _, rule := range w.Work.Rules {
 
-				matched := false
-				for _, pattern := range rule.UrnPattern {
-					m, e := regexp.Match(pattern, []byte(fetchedTask.Url.Path))
-					if e != nil {
-						log.Fatalln(e)
-					}
-					if m {
-						matched = true
-						break
-					}
-				}
+				matched := util.MatchedRule(rule, fetchedTask.Url.Path)
 
 				if !matched {
 					continue
 				}
+
+				matchedRules = append(matchedRules, rule)
 				anyMatched = true
+			}
+
+			for _, rule := range matchedRules {
 
 				var (
 					urls []*url.URL
@@ -215,7 +215,9 @@ WORKING:
 				}
 
 				// Put into Pipeline
-				go util.NewPipelineHolder(httpResponse, rule.Pipelines).Next()
+				if len(rule.Pipelines) > 0 {
+					go util.NewPipelineHolder(httpResponse, rule.Pipelines).Next()
+				}
 			}
 
 			if !anyMatched {
@@ -233,21 +235,37 @@ func isHtml(contentType string) bool {
 
 func NewWorker(work config.Work) Worker {
 	log.Printf("New Worker [%s]\n", work.Name)
+
+	var deduplicate dedup.Deduplicate
+	dedupConfig := config.GetWorkerConfig().Deduplication
+	switch dedupConfig.Name {
+	case reflect.TypeOf(dedup.DefaultDeduplicate{}).Name():
+		deduplicate = dedup.NewDeduplicate()
+	case reflect.TypeOf(dedup.RedisDeduplicate{}).Name():
+		port, e := strconv.Atoi(dedupConfig.Parameters["port"])
+		if e != nil {
+			log.Fatalln(e)
+		}
+		deduplicate = dedup.NewRedisDeduplicate(
+			dedupConfig.Parameters["host"],
+			port,
+			dedupConfig.Parameters["password"],
+			dedupConfig.Parameters["key"],
+		)
+	}
+
+	//poolConfig := config.GetWorkerConfig().Pool
+
 	return &DefaultWorker{
 		WorkerName:  work.Name,
 		Work:        work,
 		pool:        task.NewPool(),
-		deduplicate: task.NewDeduplicate(),
+		deduplicate: deduplicate,
 		requester:   &net.DefaultHttpRequester{Client: &http.Client{}},
 	}
 }
 
 func StartWorker(ctx context.Context) {
 	log.Println("Starting Workers.")
-	workConfigs := config.GetWorkConfigs()
-	for _, workConfig := range workConfigs {
-		for _, work := range workConfig.Works {
-			NewWorker(*work).Start(ctx)
-		}
-	}
+	NewWorker(*config.GetWorkConfig().Work).Start(ctx)
 }

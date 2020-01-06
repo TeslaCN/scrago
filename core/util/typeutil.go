@@ -9,7 +9,7 @@ import (
 )
 
 func GetPipelineByName(name string) (pipeline.Pipeline, bool) {
-	i, ok := setting.GetPipelineMapping()[name]
+	i, ok := setting.GetPipelineType(name)
 	if !ok {
 		log.Fatalf("Pipeline [%s] not found\n", name)
 	}

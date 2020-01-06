@@ -1,7 +1,7 @@
 package config
 
 type WorkConfig struct {
-	Works []*Work `json:"works"`
+	Work *Work `json:"work"`
 }
 
 type Work struct {
@@ -12,6 +12,7 @@ type Work struct {
 	ConcurrentRequestsPerIp     int      `json:"concurrent_requests_per_ip"`
 	Type                        string   `json:"type"`
 	Seeds                       []string `json:"seeds"`
+	MultiMatchRules             bool     `json:"multi_match_rules"`
 	Rules                       []Rule   `json:"rules"`
 }
 

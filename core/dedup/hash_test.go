@@ -1,6 +1,8 @@
-package util
+package dedup
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestHashCode(t *testing.T) {
 	t.Log(HashCode("hello, world"))

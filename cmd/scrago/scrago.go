@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/TeslaCN/scrago/cmd/scrago/config"
 	"github.com/TeslaCN/scrago/cmd/scrago/worker"
+	"github.com/TeslaCN/scrago/core/adapter/rest"
 	"log"
 	"os"
 	"os/signal"
@@ -26,6 +27,8 @@ func Start() {
 	config.InitConfig()
 
 	worker.StartWorker(ctx)
+
+	go rest.StartRestServer()
 
 	s := <-c
 	log.Printf("System Signal: %s", s)
