@@ -46,7 +46,7 @@ func (w *DefaultWorker) Start(ctx context.Context) {
 			log.Printf("[%s] Seed [%s] %s\n", w.WorkerName, seed, e)
 			continue
 		}
-		w.pool.Offer(task.Task{Url: *parsed})
+		w.pool.Offer(task.Task{Method: http.MethodGet, Url: *parsed})
 	}
 
 	goroutines := runtime.NumCPU()
@@ -254,12 +254,28 @@ func NewWorker(work config.Work) Worker {
 		)
 	}
 
-	//poolConfig := config.GetWorkerConfig().Pool
+	var pool task.Pool
+	poolConfig := config.GetWorkerConfig().Pool
+	switch poolConfig.Name {
+	case reflect.TypeOf(task.DefaultPool{}).Name():
+		pool = task.NewPool()
+	case reflect.TypeOf(task.RedisPool{}).Name():
+		port, e := strconv.Atoi(poolConfig.Parameters["port"])
+		if e != nil {
+			log.Fatalln(e)
+		}
+		pool = task.NewRedisPool(
+			poolConfig.Parameters["host"],
+			port,
+			poolConfig.Parameters["password"],
+			poolConfig.Parameters["key"],
+		)
+	}
 
 	return &DefaultWorker{
 		WorkerName:  work.Name,
 		Work:        work,
-		pool:        task.NewPool(),
+		pool:        pool,
 		deduplicate: deduplicate,
 		requester:   &net.DefaultHttpRequester{Client: &http.Client{}},
 	}
